@@ -1,5 +1,6 @@
 package com.example.cmproj2;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,24 +12,62 @@ import androidx.navigation.fragment.NavHostFragment;
 
 public class SecondFragment extends Fragment {
 
+    private static final String ARG_PARAM1 = "key1";
+    private static final String ARG_PARAM2 = "key2";
+    private static final String ARG_PARAM3 = "key3";
+    private static final String ARG_PARAM4 = "key4";
+
+    private SecondFragment.SecondFragmentInteractionListener mListener;
+
+    public SecondFragment(){
+
+    }
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+
+
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState
     ) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_second, container, false);
+        initArguments();
+
+        View view = inflater.inflate(R.layout.fragment_second, container, false);
+
+        return view;
     }
 
-    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
 
-        view.findViewById(R.id.button_second).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                NavHostFragment.findNavController(SecondFragment.this)
-                        .navigate(R.id.action_SecondFragment_to_FirstFragment);
-            }
-        });
+    private void initArguments(){
+        if (getArguments() != null) {
+        }
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof SecondFragment.SecondFragmentInteractionListener) {
+
+            // This will initialize the variable. It will return an exception if it is not
+            //  implemented in the java code of the variable context (in our case the
+            //  context is the MainActivity.
+            mListener = (SecondFragment.SecondFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+    public interface SecondFragmentInteractionListener {
+        void SecondFragmentInteraction(int spinner);
     }
 }
