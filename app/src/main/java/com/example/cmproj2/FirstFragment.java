@@ -114,8 +114,10 @@ public class FirstFragment extends Fragment {
         fab.setOnClickListener(view1 -> {
             if (!search_toogle)
                 snackbar.show();
-            else
+            else {
                 snackbar.dismiss();
+                search.setText("");
+            }
             search_toogle = !search_toogle;
         });
         //------------------------------------------------------------------------------------------------------------------------
