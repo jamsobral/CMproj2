@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Fir
     }
 
     @Override
-    public void FirstFragmentInteraction(int spinner) {
+    public void FirstFragmentInteraction(int spinner, String title) {
 
         // You will arrive here from FragmentOne
         // It will print the following sentence, with the data provided by the fragment
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Fir
         //  FragmentTwo.
         // We will also store this fragment in the memory, with the tag "fragTwo", but we will
         //  also store the transaction (addToBackStack() method) in the memory so we can use it later on.
-        SecondFragment fragmentTwo = SecondFragment.newInstance(spinner);
+        SecondFragment fragmentTwo = SecondFragment.newInstance(spinner,title);
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.main_activity , fragmentTwo, "fragTwo");
         fragmentTransaction.addToBackStack("Top");

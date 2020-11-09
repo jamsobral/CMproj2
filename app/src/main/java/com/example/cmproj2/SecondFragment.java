@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -18,7 +19,8 @@ public class SecondFragment extends Fragment {
     private static final String ARG_PARAM3 = "key3";
     private static final String ARG_PARAM4 = "key4";
 
-    private int mParam1;
+    private int note_index;
+    private String note_title;
 
     private SecondFragment.SecondFragmentInteractionListener mListener;
 
@@ -26,10 +28,11 @@ public class SecondFragment extends Fragment {
 
     }
 
-    public static SecondFragment newInstance(Integer param1) {
+    public static SecondFragment newInstance(Integer param1, String param2) {
         SecondFragment fragment = new SecondFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2,param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -38,7 +41,8 @@ public class SecondFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getInt(ARG_PARAM1);
+            note_index = getArguments().getInt(ARG_PARAM1);
+            note_title = getArguments().getString(ARG_PARAM2);
         }
     }
 
@@ -53,16 +57,19 @@ public class SecondFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_second, container, false);
 
+        TextView title = view.findViewById(R.id.insert_title);
+        title.setText(note_title);
+
         Button back = view.findViewById(R.id.back_button);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // By pressing the button, it will print the sentence FragmentOne: <mParam1_data>
-                System.out.println("FragmentTwo: " + mParam1);
+                System.out.println("FragmentTwo: " + note_index);
 
                 // It will also call the function onFragmentOneInteraction() in the MainActivity.
                 // This is the communication from a Fragment to Activity (in a nutshell)
-                mListener.SecondFragmentInteraction(Integer.valueOf(mParam1));
+                mListener.SecondFragmentInteraction(Integer.valueOf(note_index));
             }
         });
         return view;

@@ -81,7 +81,7 @@ public class FirstFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Toast.makeText(getActivity().getApplicationContext(),"SHORT position="+position+"!!!id="+id, Toast.LENGTH_LONG).show();
-                mListener.FirstFragmentInteraction(position);
+                mListener.FirstFragmentInteraction(position,list_notas[position]);
             }
         });
         Notas.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -158,6 +158,6 @@ public class FirstFragment extends Fragment {
     }
 
     public interface FirstFragmentInteractionListener {
-        void FirstFragmentInteraction(int spinner);
+        void FirstFragmentInteraction(int spinner,String title);
     }
 }
