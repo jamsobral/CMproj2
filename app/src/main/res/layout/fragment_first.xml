@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#000000"
     tools:context=".FirstFragment">
 
 
@@ -61,6 +62,8 @@
         android:background="@android:color/transparent"
         android:backgroundTint="@android:color/transparent"
         android:foregroundGravity="center_horizontal"
+        android:divider="#ffffff"
+        android:dividerHeight="2px"
         android:textAlignment="center">
 
     </ListView>
