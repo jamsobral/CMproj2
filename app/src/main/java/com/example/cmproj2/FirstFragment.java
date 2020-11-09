@@ -61,7 +61,7 @@ public class FirstFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_first, container, false);
 
         //new note feature ------------------------------------------------------------------------------------------------------------------------
-        new_note = (Button) view.findViewById(R.id.new_note);
+        new_note = (Button) view.findViewById(R.id.save_button);
         new_note.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -81,6 +81,7 @@ public class FirstFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Toast.makeText(getActivity().getApplicationContext(),"SHORT position="+position+"!!!id="+id, Toast.LENGTH_LONG).show();
+                mListener.FirstFragmentInteraction(position);
             }
         });
         Notas.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
