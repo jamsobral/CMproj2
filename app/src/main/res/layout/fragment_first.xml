@@ -11,14 +11,14 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="55dp"
         android:theme="@style/Theme.CMproj2.AppBarOverlay">
 
 
         <Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
+            android:layout_height="55dp"
             app:titleTextColor="@android:color/white"
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/Theme.CMproj2.PopupOverlay">
@@ -37,14 +37,20 @@
                     android:textColor="#ffffff"
                     android:gravity="center"/>
 
-                <Button
-                    style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
-                    android:id="@+id/save_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="?attr/actionBarSize"
-                    android:layout_marginLeft="120dp"
-                    android:text="Nova Nota"
-                    android:textColor="@color/white" />
+                <LinearLayout
+                    android:layout_width="0dip"
+                    android:layout_height="55dp"
+                    android:orientation="horizontal"
+                    android:layout_weight="1"
+                    android:gravity="right">
+                    <Button
+                        style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
+                        android:id="@+id/save_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="?attr/actionBarSize"
+                        android:text="Nova Nota"
+                        android:textColor="@color/white" />
+                </LinearLayout>
             </LinearLayout>
 
 
@@ -58,7 +64,7 @@
         android:id="@+id/notes_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="16dp"
+        android:layout_marginTop="55dp"
         android:background="@android:color/transparent"
         android:backgroundTint="@android:color/transparent"
         android:foregroundGravity="center_horizontal"
