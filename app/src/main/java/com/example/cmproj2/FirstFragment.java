@@ -120,7 +120,6 @@ public class FirstFragment extends Fragment {
                 search.setText("");
             }
             search_toogle = !search_toogle;
-            Toast.makeText(getActivity().getApplicationContext(),"bicho", Toast.LENGTH_LONG).show();
         });
         //------------------------------------------------------------------------------------------------------------------------
 
