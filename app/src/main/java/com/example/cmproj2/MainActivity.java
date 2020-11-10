@@ -5,25 +5,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements FirstFragment.FirstFragmentInteractionListener, SecondFragment.SecondFragmentInteractionListener{
 
@@ -66,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Fir
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                //
+                //TODO erase note on position "position"
             }
         });
         warningBuilder.setNeutralButton("Modificar título", new DialogInterface.OnClickListener() {
@@ -74,7 +62,6 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Fir
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 show_modify_dialog(position);
-                //
             }
         });
         warningBuilder.setNegativeButton("Cancelar", null);
@@ -88,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Fir
 
         View view = objLayoutInflater.inflate(R.layout.dialog_view, null);
 
-        final EditText editText = (EditText) view.findViewById(R.id.search);
+        final EditText editText = (EditText) view.findViewById(R.id.new_title);
 
         //TODO replace this edittext set text
         editText.setText("get note title from shared preferences for position "+ position);
@@ -111,16 +98,25 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Fir
 
     public static void show_new_note_dialog(){
         //STATIC CONTEXT POR ISSO OS DIALOGS TEM DE SER CHAMADOS A PARTIR DA MAIN ACTIVITY
+
+        View view = objLayoutInflater.inflate(R.layout.dialog_view, null);
+
+        final EditText editText = (EditText) view.findViewById(R.id.new_title);
+        editText.setText("");
+        editText.setHint("Insira novo titulo");
+
         AlertDialog.Builder warningBuilder = new AlertDialog.Builder(context);
-            warningBuilder.setTitle("Adicionar uma nova nota");
-        warningBuilder.setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
+        warningBuilder.setTitle("Adicionar uma nota?");
+        warningBuilder.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
+                //TODO get edittext and save on shared preferences
             }
         });
         warningBuilder.setNegativeButton("Cancelar", null);
         AlertDialog dialog = warningBuilder.create();
+        dialog.setView(view);
         dialog.show();
 
     }
