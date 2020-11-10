@@ -1,6 +1,8 @@
 package com.example.cmproj2;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -18,6 +20,8 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+
+import static com.example.cmproj2.MainActivity.show_new_note_dialog;
 
 public class FirstFragment extends Fragment {
 
@@ -42,9 +46,8 @@ public class FirstFragment extends Fragment {
         return fragment;
     }
 
-    public FirstFragment(){
+    public FirstFragment(){}
 
-    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +69,7 @@ public class FirstFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Toast.makeText(getActivity().getApplicationContext(),"NEW NOTE DIALOG", Toast.LENGTH_LONG).show();
+                MainActivity.show_new_note_dialog();
             }
         });
 
@@ -88,6 +92,8 @@ public class FirstFragment extends Fragment {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 Toast.makeText(getActivity().getApplicationContext(),"LONG position="+position+"!!!id="+id, Toast.LENGTH_LONG).show();
+
+                MainActivity.show_erase_dialog(position);
                 return true;
             }
         });
@@ -106,8 +112,8 @@ public class FirstFragment extends Fragment {
         search.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
             @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                updatelist();
                 Toast.makeText(getActivity().getApplicationContext(),search.getText().toString() + " -> SEARCH", Toast.LENGTH_LONG).show();
+
             }
             @Override public void afterTextChanged(Editable editable) { }
         });
@@ -124,10 +130,6 @@ public class FirstFragment extends Fragment {
         //------------------------------------------------------------------------------------------------------------------------
 
         return view;
-    }
-
-    private void updatelist(){
-
     }
 
     private void initArguments(){

@@ -1,6 +1,8 @@
 package com.example.cmproj2;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -30,6 +32,10 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Fir
     private static final String ARG_PARAM3 = "key3";
     private static final String ARG_PARAM4 = "key4";
 
+    private static Context context;
+    private static LayoutInflater objLayoutInflater;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,11 +46,82 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Fir
 
 
         //PREPARAR E LANÇAR O PRIMEIRO FRAGMENTO
-        String[] list_notas = new String[]{"Nota1", "Nota2", "Nota3", "Nota4", "Nota5", "Nota6","Nota7", "Nota8", "Nota9", "Nota10", "Nota11", "Nota12","Nota13", "Nota14", "Nota15", "Nota16", "Nota17", "Nota18"};
+        String[] list_notas = new String[]{"Nota0","Nota1", "Nota2", "Nota3", "Nota4", "Nota5", "Nota6","Nota7", "Nota8", "Nota9", "Nota10", "Nota11", "Nota12","Nota13", "Nota14", "Nota15", "Nota16", "Nota17", "Nota18"};
         FirstFragment firstFragment = FirstFragment.newInstance(list_notas); //VALORES INICIAIS PARA NAO IR EM BRANCO
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.add(R.id.main_activity, firstFragment, "mainfrag");
         fragmentTransaction.commit();
+
+        context = MainActivity.this;
+        objLayoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+    }
+
+    public static void show_erase_dialog(int position){
+        //STATIC CONTEXT POR ISSO OS DIALOGS TEM DE SER CHAMADOS A PARTIR DA MAIN ACTIVITY
+
+        AlertDialog.Builder warningBuilder = new AlertDialog.Builder(context);
+        warningBuilder.setTitle("Apagar ou modificar a nota "+position+"?");
+        warningBuilder.setPositiveButton("Apagar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                //
+            }
+        });
+        warningBuilder.setNeutralButton("Modificar título", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                show_modify_dialog(position);
+                //
+            }
+        });
+        warningBuilder.setNegativeButton("Cancelar", null);
+        AlertDialog dialog = warningBuilder.create();
+        dialog.show();
+
+    }
+
+    public static void show_modify_dialog(int position){
+        //STATIC CONTEXT POR ISSO OS DIALOGS TEM DE SER CHAMADOS A PARTIR DA MAIN ACTIVITY
+
+        View view = objLayoutInflater.inflate(R.layout.dialog_view, null);
+
+        final EditText editText = (EditText) view.findViewById(R.id.search);
+
+        //TODO replace this edittext set text
+        editText.setText("get note title from shared preferences for position "+ position);
+
+        AlertDialog.Builder warningBuilder = new AlertDialog.Builder(context);
+        warningBuilder.setTitle("Modificar a nota "+position+"?");
+        warningBuilder.setPositiveButton("Modificar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                //TODO save new title (editext.getText) on shared preferences no id "position"
+            }
+        });
+        warningBuilder.setNegativeButton("Cancelar", null);
+        AlertDialog dialog = warningBuilder.create();
+        dialog.setView(view);
+        dialog.show();
+
+    }
+
+    public static void show_new_note_dialog(){
+        //STATIC CONTEXT POR ISSO OS DIALOGS TEM DE SER CHAMADOS A PARTIR DA MAIN ACTIVITY
+        AlertDialog.Builder warningBuilder = new AlertDialog.Builder(context);
+            warningBuilder.setTitle("Adicionar uma nova nota");
+        warningBuilder.setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        warningBuilder.setNegativeButton("Cancelar", null);
+        AlertDialog dialog = warningBuilder.create();
+        dialog.show();
 
     }
 
@@ -71,7 +148,6 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Fir
     public void SecondFragmentInteraction(int spinner) {
         System.out.println("MainActivity (from two): " + spinner);
 
-        // TODO - you should ALWAYS check if this is null or not. It might return null.
         FirstFragment fragmentOne = (FirstFragment) getSupportFragmentManager().findFragmentByTag("fragOne");
 
         // With this call, the FragmentOne will pop-up in the screen (it will call the onCreateView())
