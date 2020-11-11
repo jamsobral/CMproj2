@@ -11,15 +11,15 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="55dp"
+        android:layout_height="wrap_content"
         android:theme="@style/Theme.CMproj2.AppBarOverlay">
 
 
         <Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="55dp"
-            app:titleTextColor="@android:color/white"
+            android:layout_height="?attr/actionBarSize"
+            app:titleTextColor="#35afb8"
             android:background="#333335"
             app:popupTheme="@style/Theme.CMproj2.PopupOverlay">
 
@@ -34,23 +34,17 @@
                     android:layout_height="?attr/actionBarSize"
                     android:text="Note Taker"
                     android:textSize="25dp"
-                    android:textColor="@color/teal_700"
+                    android:textColor="#35afb8"
                     android:gravity="center"/>
 
-                <LinearLayout
-                    android:layout_width="0dip"
-                    android:layout_height="55dp"
-                    android:orientation="horizontal"
-                    android:layout_weight="1"
-                    android:gravity="right">
-                    <Button
-                        style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
-                        android:id="@+id/save_button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="?attr/actionBarSize"
-                        android:text="Nova Nota"
-                        android:textColor="@color/teal_700" />
-                </LinearLayout>
+                <Button
+                    style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
+                    android:id="@+id/save_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="?attr/actionBarSize"
+                    android:layout_marginLeft="120dp"
+                    android:text="Nova Nota"
+                    android:textColor="#35afb8" />
             </LinearLayout>
 
 
@@ -64,11 +58,11 @@
         android:id="@+id/notes_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="55dp"
-        android:background="#222224"
-        android:backgroundTint="#222224"
+        android:layout_margin="16dp"
+        android:background="@android:color/transparent"
+        android:backgroundTint="@android:color/transparent"
         android:foregroundGravity="center_horizontal"
-        android:divider="#aeaeaf"
+        android:divider="#ffffff"
         android:dividerHeight="2px"
         android:textAlignment="center">
 
