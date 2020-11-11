@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000000"
+    android:background="#222224"
     tools:context=".FirstFragment">
 
 
@@ -19,8 +19,8 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:titleTextColor="@android:color/white"
-            android:background="?attr/colorPrimary"
+            app:titleTextColor="#35afb8"
+            android:background="#333335"
             app:popupTheme="@style/Theme.CMproj2.PopupOverlay">
 
             <LinearLayout
@@ -32,9 +32,9 @@
                     android:id="@+id/app_title"
                     android:layout_width="wrap_content"
                     android:layout_height="?attr/actionBarSize"
-                    android:text="Note taker"
+                    android:text="Note Taker"
                     android:textSize="25dp"
-                    android:textColor="#ffffff"
+                    android:textColor="#35afb8"
                     android:gravity="center"/>
 
                 <Button
@@ -44,7 +44,7 @@
                     android:layout_height="?attr/actionBarSize"
                     android:layout_marginLeft="120dp"
                     android:text="Nova Nota"
-                    android:textColor="@color/white" />
+                    android:textColor="#35afb8" />
             </LinearLayout>
 
 
