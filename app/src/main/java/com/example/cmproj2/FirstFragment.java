@@ -141,7 +141,7 @@ public class FirstFragment extends Fragment {
     }
 
     public void update_list(String search){
-        List<String> temp = new ArrayList<String>(); ;
+        List<String> temp = new ArrayList<String>();
         if(!search.equals("")){
             for(int i = 0; i < list_notas.length; i++){
                 if(list_notas[i].startsWith(search)){

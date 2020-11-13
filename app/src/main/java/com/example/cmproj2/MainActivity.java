@@ -16,6 +16,7 @@ import android.view.View;
 
 import android.widget.EditText;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -100,6 +101,7 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Fir
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 //TODO erase note on position "position"
+                list_notas = eraseElement(list_notas,position);
             }
         });
         warningBuilder.setNeutralButton("Modificar título", new DialogInterface.OnClickListener() {
@@ -122,8 +124,7 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Fir
 
         final EditText editText = (EditText) view.findViewById(R.id.new_title);
 
-        //TODO replace this edittext set text
-        editText.setText("get note title from shared preferences for position "+ position);
+        editText.setText(list_notas[position]);
 
         AlertDialog.Builder warningBuilder = new AlertDialog.Builder(context);
         warningBuilder.setTitle("Modificar a nota "+position+"?");
@@ -131,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Fir
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                //TODO save new title (editext.getText) on shared preferences no id "position"
+                list_notas = replaceElement(list_notas, position, editText.getText().toString());
             }
         });
         warningBuilder.setNegativeButton("Cancelar", null);
@@ -165,6 +166,30 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Fir
         dialog.setView(view);
         dialog.show();
 
+    }
+
+    static String[] replaceElement(String[] arr, int position, String new_title){
+        int N = arr.length;
+        List<String> list = new ArrayList<String>();
+        for (int i = 0; i<N; i++) {
+            if(i == position){
+                list.add(new_title);
+            }else{
+                list.add(arr[i]);
+            }
+        }
+        return list.toArray(new String[0]);
+    }
+
+    static String[] eraseElement(String[] arr, int position){
+        int N = arr.length;
+        List<String> list = new ArrayList<String>();
+        for (int i = 0; i<N; i++) {
+            if(i != position){
+                list.add(arr[i]);
+            }
+        }
+        return list.toArray(new String[0]);
     }
 
     static String[] append(String[] arr, String element) {
