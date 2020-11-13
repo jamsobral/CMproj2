@@ -115,7 +115,6 @@ public class FirstFragment extends Fragment {
         search.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
             @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                Toast.makeText(getActivity().getApplicationContext(),search.getText().toString() + " -> SEARCH", Toast.LENGTH_LONG).show();
                 update_list(search.getText().toString());
             }
             @Override public void afterTextChanged(Editable editable) { }

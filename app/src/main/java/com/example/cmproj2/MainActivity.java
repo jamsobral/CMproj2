@@ -56,23 +56,21 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Fir
         fragmentTransaction.add(R.id.main_activity, firstFragment, "mainfrag");
         fragmentTransaction.commit();
 
+        //DIALOGS context and inflator
         context = MainActivity.this;
         objLayoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-
     }
+
     @Override
     protected void onStop() {
         super.onStop();
         setSharedPreferences();
     }
-
     @Override
     protected void onPause() {
         super.onPause();
         setSharedPreferences();
     }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -86,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Fir
         prefsEditor.commit();
 
     }
+
     public void getSharedPreferences(){
         Set<String> set = prefs.getStringSet("key",null);
         list_notas = set.toArray(new String[0]);
