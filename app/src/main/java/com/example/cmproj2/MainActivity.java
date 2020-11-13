@@ -3,15 +3,25 @@ package com.example.cmproj2;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
 import android.widget.EditText;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import static java.util.stream.Collectors.toList;
 
 public class MainActivity extends AppCompatActivity implements FirstFragment.FirstFragmentInteractionListener, SecondFragment.SecondFragmentInteractionListener{
 
@@ -23,18 +33,24 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Fir
     private static Context context;
     private static LayoutInflater objLayoutInflater;
 
+    private SharedPreferences prefs;
+    private SharedPreferences.Editor prefsEditor ;
 
+    private static String[] list_notas;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-
+        //Sharedpreferences saves titles
+        prefs = getPreferences(MODE_PRIVATE);
+        prefsEditor = prefs.edit();
+        list_notas = new String[]{};
+        getSharedPreferences();
 
         //PREPARAR E LANÇAR O PRIMEIRO FRAGMENTO
-        String[] list_notas = new String[]{"Nota0","Nota1", "Nota2", "Nota3", "Nota4", "Nota5", "Nota6","Nota7", "Nota8", "Nota9", "Nota10", "Nota11", "Nota12","Nota13", "Nota14", "Nota15", "Nota16", "Nota17", "Nota18"};
+
         FirstFragment firstFragment = FirstFragment.newInstance(list_notas); //VALORES INICIAIS PARA NAO IR EM BRANCO
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.add(R.id.main_activity, firstFragment, "mainfrag");
@@ -43,6 +59,38 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Fir
         context = MainActivity.this;
         objLayoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        setSharedPreferences();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        setSharedPreferences();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getSharedPreferences();
+    }
+
+    public void setSharedPreferences(){
+        Set<String> set = new HashSet<>();
+        set.addAll(Arrays.asList(list_notas));
+        prefsEditor.putStringSet("key",set);
+        prefsEditor.commit();
+
+    }
+
+    public void getSharedPreferences(){
+        Set<String> set = prefs.getStringSet("key",null);
+        list_notas = set.toArray(new String[0]);
     }
 
     public static void show_erase_dialog(int position){
@@ -111,7 +159,8 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Fir
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                //TODO get edittext and save on shared preferences
+                list_notas = append(list_notas,editText.getText().toString());
+                //TODO update list viewer
             }
         });
         warningBuilder.setNegativeButton("Cancelar", null);
@@ -119,6 +168,13 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Fir
         dialog.setView(view);
         dialog.show();
 
+    }
+
+    static String[] append(String[] arr, String element) {
+        final int N = arr.length;
+        arr = Arrays.copyOf(arr, N + 1);
+        arr[N] = element;
+        return arr;
     }
 
     @Override

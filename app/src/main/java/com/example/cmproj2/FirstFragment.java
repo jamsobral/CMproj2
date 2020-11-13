@@ -68,7 +68,6 @@ public class FirstFragment extends Fragment {
         new_note.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getActivity().getApplicationContext(),"NEW NOTE DIALOG", Toast.LENGTH_LONG).show();
                 MainActivity.show_new_note_dialog();
             }
         });
