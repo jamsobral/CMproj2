@@ -61,7 +61,6 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Fir
 
 
     }
-
     @Override
     protected void onStop() {
         super.onStop();
@@ -87,7 +86,6 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Fir
         prefsEditor.commit();
 
     }
-
     public void getSharedPreferences(){
         Set<String> set = prefs.getStringSet("key",null);
         list_notas = set.toArray(new String[0]);

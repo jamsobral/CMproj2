@@ -21,6 +21,10 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import static com.example.cmproj2.MainActivity.show_new_note_dialog;
 
 public class FirstFragment extends Fragment {
@@ -112,7 +116,7 @@ public class FirstFragment extends Fragment {
             @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
             @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 Toast.makeText(getActivity().getApplicationContext(),search.getText().toString() + " -> SEARCH", Toast.LENGTH_LONG).show();
-
+                update_list(search.getText().toString());
             }
             @Override public void afterTextChanged(Editable editable) { }
         });
@@ -135,6 +139,22 @@ public class FirstFragment extends Fragment {
         if (getArguments() != null) {
             list_notas = getArguments().getStringArray(ARG_PARAM1);
         }
+    }
+
+    public void update_list(String search){
+        List<String> temp = new ArrayList<String>(); ;
+        if(!search.equals("")){
+            for(int i = 0; i < list_notas.length; i++){
+                if(list_notas[i].startsWith(search)){
+                    temp.add(list_notas[i]);
+                }
+            }
+        }else{
+            temp = Arrays.asList(list_notas);
+        }
+        ArrayAdapter<String> itemsAdapter =
+                new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.note_list_item, temp);
+        Notas.setAdapter(itemsAdapter);
     }
 
     @Override
