@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,7 +21,7 @@ public class SecondFragment extends Fragment {
     private static final String ARG_PARAM4 = "key4";
 
     private int note_index;
-    private String note_title;
+    private String note_title, note_content;
 
     private SecondFragment.SecondFragmentInteractionListener mListener;
 
@@ -28,11 +29,12 @@ public class SecondFragment extends Fragment {
 
     }
 
-    public static SecondFragment newInstance(Integer param1, String param2) {
+    public static SecondFragment newInstance(Integer param1, String param2, String param3) {
         SecondFragment fragment = new SecondFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2,param2);
+        args.putString(ARG_PARAM2, param2);
+        args.putString(ARG_PARAM3, param3);
         fragment.setArguments(args);
         return fragment;
     }
@@ -43,6 +45,7 @@ public class SecondFragment extends Fragment {
         if (getArguments() != null) {
             note_index = getArguments().getInt(ARG_PARAM1);
             note_title = getArguments().getString(ARG_PARAM2);
+            note_content = getArguments().getString(ARG_PARAM3);
         }
     }
 
@@ -60,16 +63,25 @@ public class SecondFragment extends Fragment {
         TextView title = view.findViewById(R.id.insert_title);
         title.setText(note_title);
 
+        EditText text_note = view.findViewById(R.id.text_note);
+        text_note.setText(note_content);
         Button back = view.findViewById(R.id.back_button);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // By pressing the button, it will print the sentence FragmentOne: <mParam1_data>
-                System.out.println("FragmentTwo: " + note_index);
 
                 // It will also call the function onFragmentOneInteraction() in the MainActivity.
                 // This is the communication from a Fragment to Activity (in a nutshell)
-                mListener.SecondFragmentInteraction(Integer.valueOf(note_index));
+                mListener.SecondFragmentInteraction("back", "mlg", note_index);
+            }
+        });
+
+        Button save = view.findViewById(R.id.save_button);
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String text = text_note.getText().toString();
+                mListener.SecondFragmentInteraction("save", text, note_index);
             }
         });
         return view;
@@ -90,10 +102,13 @@ public class SecondFragment extends Fragment {
             //  implemented in the java code of the variable context (in our case the
             //  context is the MainActivity.
             mListener = (SecondFragment.SecondFragmentInteractionListener) context;
+
+
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+
     }
     @Override
     public void onDetach() {
@@ -102,6 +117,6 @@ public class SecondFragment extends Fragment {
     }
 
     public interface SecondFragmentInteractionListener {
-        void SecondFragmentInteraction(int spinner);
+        void SecondFragmentInteraction(String TAG, String note, int position);
     }
 }
