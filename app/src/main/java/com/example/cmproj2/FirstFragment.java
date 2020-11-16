@@ -3,6 +3,7 @@ package com.example.cmproj2;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -22,10 +23,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.Set;
 
-import static com.example.cmproj2.MainActivity.show_new_note_dialog;
 
 public class FirstFragment extends Fragment {
 
@@ -35,17 +34,17 @@ public class FirstFragment extends Fragment {
     private static final String ARG_PARAM4 = "key4";
 
     private ListView Notas;
-    private String[] list_notas;
+    private ArrayList<String> titles;
     private Button new_note;
     private FirstFragmentInteractionListener mListener;
     private EditText search;
     private boolean search_toogle = false;
 
-    public static FirstFragment newInstance(String[] list_nots) {
+    public static FirstFragment newInstance(ArrayList<String> list_nots) {
         //função usada pela atividade principal
         FirstFragment fragment = new FirstFragment();
         Bundle args = new Bundle();
-        args.putStringArray(ARG_PARAM1, list_nots);
+        args.putStringArrayList(ARG_PARAM1, list_nots);
         fragment.setArguments(args);
         return fragment;
     }
@@ -62,7 +61,6 @@ public class FirstFragment extends Fragment {
             LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState
     ) {
-
         initArguments();
 
         View view = inflater.inflate(R.layout.fragment_first, container, false);
@@ -72,7 +70,8 @@ public class FirstFragment extends Fragment {
         new_note.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MainActivity.show_new_note_dialog();
+                MainActivity activity = (MainActivity) getActivity();
+                activity.show_new_note_dialog();
             }
         });
 
@@ -81,14 +80,15 @@ public class FirstFragment extends Fragment {
         //LIST FEATURE ------------------------------------------------------------------------------------------------------------------------
         Notas = (ListView) view.findViewById(R.id.notes_list);
         ArrayAdapter<String> itemsAdapter =
-                new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.note_list_item, list_notas);
+                new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.note_list_item, titles);
         Notas.setAdapter(itemsAdapter);
+
 
         Notas.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Toast.makeText(getActivity().getApplicationContext(),"SHORT position="+position+"!!!id="+id, Toast.LENGTH_LONG).show();
-                mListener.FirstFragmentInteraction(position,list_notas[position]);
+                mListener.FirstFragmentInteraction(position, titles.get(position));
             }
         });
         Notas.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -96,10 +96,12 @@ public class FirstFragment extends Fragment {
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 Toast.makeText(getActivity().getApplicationContext(),"LONG position="+position+"!!!id="+id, Toast.LENGTH_LONG).show();
 
-                MainActivity.show_erase_dialog(position);
+                MainActivity activity = (MainActivity) getActivity();
+                activity.show_erase_dialog(position);
                 return true;
             }
         });
+
         // ------------------------------------------------------------------------------------------------------------------------
 
 
@@ -111,11 +113,22 @@ public class FirstFragment extends Fragment {
         Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar.getView();
         layout.addView(snackView, 0);
 
+
         search = (EditText) snackView.findViewById(R.id.search);
         search.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
             @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                update_list(search.getText().toString());
+                //Toast.makeText(getActivity().getApplicationContext(),search.getText().toString() + " -> SEARCH", Toast.LENGTH_LONG).show();
+                ArrayAdapter<String> adapter = (ArrayAdapter<String>) Notas.getAdapter();
+                ArrayList<String> notas = new ArrayList<>();
+                for (String nota: titles){
+                    if (nota.contains(charSequence)){
+                        notas.add(nota);
+                    }
+                }
+                adapter.clear();
+                adapter.addAll(notas);
+                adapter.notifyDataSetChanged();
             }
             @Override public void afterTextChanged(Editable editable) { }
         });
@@ -128,6 +141,11 @@ public class FirstFragment extends Fragment {
                 search.setText("");
             }
             search_toogle = !search_toogle;
+            ArrayAdapter<String> adapter = (ArrayAdapter<String>) Notas.getAdapter();
+            adapter.clear();
+            adapter.addAll(titles);
+            adapter.notifyDataSetChanged();
+
         });
         //------------------------------------------------------------------------------------------------------------------------
 
@@ -136,24 +154,8 @@ public class FirstFragment extends Fragment {
 
     private void initArguments(){
         if (getArguments() != null) {
-            list_notas = getArguments().getStringArray(ARG_PARAM1);
+            titles = getArguments().getStringArrayList(ARG_PARAM1);
         }
-    }
-
-    public void update_list(String search){
-        List<String> temp = new ArrayList<String>();
-        if(!search.equals("")){
-            for(int i = 0; i < list_notas.length; i++){
-                if(list_notas[i].startsWith(search)){
-                    temp.add(list_notas[i]);
-                }
-            }
-        }else{
-            temp = Arrays.asList(list_notas);
-        }
-        ArrayAdapter<String> itemsAdapter =
-                new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.note_list_item, temp);
-        Notas.setAdapter(itemsAdapter);
     }
 
     @Override
@@ -176,7 +178,38 @@ public class FirstFragment extends Fragment {
         mListener = null;
     }
 
-    public interface FirstFragmentInteractionListener {
-        void FirstFragmentInteraction(int spinner,String title);
+    public void addNotas(String nota){
+        titles.add(nota);
+        ArrayAdapter<String> adapter = (ArrayAdapter<String>) Notas.getAdapter();
+        adapter.notifyDataSetChanged();
     }
+
+    public void removeNotas(int position){
+        titles.remove(position);
+        ArrayAdapter<String> adapter = (ArrayAdapter<String>) Notas.getAdapter();
+        adapter.notifyDataSetChanged();
+    }
+
+    public void editNotas(String nota, int position){
+        titles.set(position, nota);
+        ArrayAdapter<String> adapter = (ArrayAdapter<String>) Notas.getAdapter();
+        adapter.notifyDataSetChanged();
+    }
+
+    public interface FirstFragmentInteractionListener {
+        void FirstFragmentInteraction(int spinner, String title);
+    }
+
+    public interface addNotasListener {
+        void addNotasInteraction(String new_note);
+    }
+
+    public interface removeNotasListener {
+        void removeNotasInteraction(int position);
+    }
+
+    public interface editNotasListener {
+        void editNotasInteraction(String nota, int position);
+    }
+
 }
