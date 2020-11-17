@@ -62,6 +62,7 @@ public class FirstFragment extends Fragment {
     }
 
     public void setSharedPreferences(){
+        prefsEditor.clear();
         Set<String> set = new HashSet<>();
         set.addAll(notas.getIds());
         prefsEditor.putStringSet("key", set);
