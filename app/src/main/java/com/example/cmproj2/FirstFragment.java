@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -22,7 +23,10 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Scanner;
 import java.util.Set;
 
 
@@ -33,23 +37,55 @@ public class FirstFragment extends Fragment {
     private static final String ARG_PARAM3 = "key3";
     private static final String ARG_PARAM4 = "key4";
 
-    private ListView Notas;
-    private ArrayList<String> titles;
+    private ListView notasView;
+    private Notas notas;
     private Button new_note;
     private FirstFragmentInteractionListener mListener;
     private EditText search;
     private boolean search_toogle = false;
+    private SharedPreferences prefs;
+    private SharedPreferences.Editor prefsEditor;
+    private LayoutInflater objLayoutInflater;
 
-    public static FirstFragment newInstance(ArrayList<String> list_nots) {
+
+    public static FirstFragment newInstance(SharedPreferences prefs, SharedPreferences.Editor prefsEditor) {
         //função usada pela atividade principal
-        FirstFragment fragment = new FirstFragment();
+        FirstFragment fragment = new FirstFragment(prefs, prefsEditor);
         Bundle args = new Bundle();
-        args.putStringArrayList(ARG_PARAM1, list_nots);
         fragment.setArguments(args);
         return fragment;
     }
 
-    public FirstFragment(){}
+    public FirstFragment(SharedPreferences prefs, SharedPreferences.Editor prefsEditor){
+        this.prefs = prefs;
+        this.prefsEditor = prefsEditor;
+    }
+
+    public void setSharedPreferences(){
+        Set<String> set = new HashSet<>();
+        set.addAll(notas.getIds());
+        prefsEditor.putStringSet("key", set);
+        for (int i = 0; i < notas.getIds().size(); i++){
+            String id = notas.getIds().get(i);
+            prefsEditor.putString(id, notas.getTitleById(id));
+        }
+        prefsEditor.commit();
+    }
+
+    public void getSharedPreferences(){
+        Set<String> set = prefs.getStringSet("key", null);
+        ArrayList<String> ids, titles;
+        if (set != null){
+            ids = new ArrayList<String>(set);
+            titles = new ArrayList<>();
+            for (String id: ids){
+                titles.add(prefs.getString(id, null));
+            }
+            notas = new Notas(ids, titles);
+        } else {
+            notas = new Notas(new ArrayList<String>(), new ArrayList<String>());
+        }
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,7 +97,12 @@ public class FirstFragment extends Fragment {
             LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState
     ) {
-        initArguments();
+        //initArguments();
+        objLayoutInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        getSharedPreferences();
+        ArrayList<String> ids = notas.getIds();
+        new LoadTask().execute(ids.toArray(new String[ids.size()]));
 
         View view = inflater.inflate(R.layout.fragment_first, container, false);
 
@@ -70,34 +111,33 @@ public class FirstFragment extends Fragment {
         new_note.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MainActivity activity = (MainActivity) getActivity();
-                activity.show_new_note_dialog();
+                show_new_note_dialog();
             }
         });
 
         // ------------------------------------------------------------------------------------------------------------------------
 
         //LIST FEATURE ------------------------------------------------------------------------------------------------------------------------
-        Notas = (ListView) view.findViewById(R.id.notes_list);
+        notasView = (ListView) view.findViewById(R.id.notes_list);
         ArrayAdapter<String> itemsAdapter =
-                new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.note_list_item, titles);
-        Notas.setAdapter(itemsAdapter);
+                new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.note_list_item, notas.getDisplay_titles());
+        notasView.setAdapter(itemsAdapter);
 
 
-        Notas.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        notasView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getActivity().getApplicationContext(),"SHORT position="+position+"!!!id="+id, Toast.LENGTH_LONG).show();
-                mListener.FirstFragmentInteraction(position, titles.get(position));
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id_) {
+                String title = (String) parent.getAdapter().getItem(position);
+                String[] nota = notas.getNoteByTitle(title); // retorna [id, title, nota]
+                String id = nota[0];
+                String note = nota[2];
+                mListener.FirstFragmentInteraction(id, title, note);
             }
         });
-        Notas.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        notasView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getActivity().getApplicationContext(),"LONG position="+position+"!!!id="+id, Toast.LENGTH_LONG).show();
-
-                MainActivity activity = (MainActivity) getActivity();
-                activity.show_erase_dialog(position);
+                show_erase_dialog(position);
                 return true;
             }
         });
@@ -119,15 +159,15 @@ public class FirstFragment extends Fragment {
             @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
             @Override public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 //Toast.makeText(getActivity().getApplicationContext(),search.getText().toString() + " -> SEARCH", Toast.LENGTH_LONG).show();
-                ArrayAdapter<String> adapter = (ArrayAdapter<String>) Notas.getAdapter();
-                ArrayList<String> notas = new ArrayList<>();
-                for (String nota: titles){
+                ArrayAdapter<String> adapter = (ArrayAdapter<String>) notasView.getAdapter();
+                ArrayList<String> notasFiltradas = new ArrayList<>();
+                for (String nota: notas.getTitles()){
                     if (nota.contains(charSequence)){
-                        notas.add(nota);
+                        notasFiltradas.add(nota);
                     }
                 }
                 adapter.clear();
-                adapter.addAll(notas);
+                adapter.addAll(notasFiltradas);
                 adapter.notifyDataSetChanged();
             }
             @Override public void afterTextChanged(Editable editable) { }
@@ -141,9 +181,9 @@ public class FirstFragment extends Fragment {
                 search.setText("");
             }
             search_toogle = !search_toogle;
-            ArrayAdapter<String> adapter = (ArrayAdapter<String>) Notas.getAdapter();
+            ArrayAdapter<String> adapter = (ArrayAdapter<String>) notasView.getAdapter();
             adapter.clear();
-            adapter.addAll(titles);
+            adapter.addAll(notas.getTitles());
             adapter.notifyDataSetChanged();
 
         });
@@ -152,9 +192,81 @@ public class FirstFragment extends Fragment {
         return view;
     }
 
+    public void show_erase_dialog(int position){
+        AlertDialog.Builder warningBuilder = new AlertDialog.Builder(getActivity());
+        warningBuilder.setTitle("Apagar ou modificar a nota "+position+"?");
+        warningBuilder.setPositiveButton("Apagar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                removeNotas(position);
+            }
+        });
+        warningBuilder.setNeutralButton("Modificar título", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                show_modify_dialog(notas.getTitles().get(position), position);
+            }
+        });
+        warningBuilder.setNegativeButton("Cancelar", null);
+        AlertDialog dialog = warningBuilder.create();
+        dialog.show();
+
+    }
+
+    public void show_modify_dialog(String nota, int position){
+
+        View view = objLayoutInflater.inflate(R.layout.dialog_view, null);
+
+        EditText editText = (EditText) view.findViewById(R.id.new_title);
+
+        editText.setText(nota);
+
+        AlertDialog.Builder warningBuilder = new AlertDialog.Builder(getActivity());
+        warningBuilder.setTitle("Modificar a nota "+position+"?");
+        warningBuilder.setPositiveButton("Modificar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                String new_note = editText.getText().toString();
+                editNotas(new_note, position);
+            }
+        });
+        warningBuilder.setNegativeButton("Cancelar", null);
+        AlertDialog dialog = warningBuilder.create();
+        dialog.setView(view);
+        dialog.show();
+
+    }
+
+    public void show_new_note_dialog(){
+
+        View view = objLayoutInflater.inflate(R.layout.dialog_view, null);
+
+        final EditText editText = (EditText) view.findViewById(R.id.new_title);
+        editText.setText("");
+        editText.setHint("Insira novo titulo");
+
+        AlertDialog.Builder warningBuilder = new AlertDialog.Builder(getActivity());
+        warningBuilder.setTitle("Adicionar uma nota?");
+        warningBuilder.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                String new_note = editText.getText().toString();
+                addNotas(new_note);
+            }
+        });
+        warningBuilder.setNegativeButton("Cancelar", null);
+        AlertDialog dialog = warningBuilder.create();
+        dialog.setView(view);
+        dialog.show();
+
+    }
     private void initArguments(){
         if (getArguments() != null) {
-            titles = getArguments().getStringArrayList(ARG_PARAM1);
+            //titles = getArguments().getStringArrayList(ARG_PARAM1);
         }
     }
 
@@ -179,37 +291,58 @@ public class FirstFragment extends Fragment {
     }
 
     public void addNotas(String nota){
-        titles.add(nota);
-        ArrayAdapter<String> adapter = (ArrayAdapter<String>) Notas.getAdapter();
+        notas.newNote(nota);
+        ArrayAdapter<String> adapter = (ArrayAdapter<String>) notasView.getAdapter();
         adapter.notifyDataSetChanged();
+        setSharedPreferences();
     }
 
     public void removeNotas(int position){
-        titles.remove(position);
-        ArrayAdapter<String> adapter = (ArrayAdapter<String>) Notas.getAdapter();
+        notas.removeNote(position);
+        ArrayAdapter<String> adapter = (ArrayAdapter<String>) notasView.getAdapter();
         adapter.notifyDataSetChanged();
+        setSharedPreferences();
     }
 
     public void editNotas(String nota, int position){
-        titles.set(position, nota);
-        ArrayAdapter<String> adapter = (ArrayAdapter<String>) Notas.getAdapter();
+        notas.editNote(position, nota);
+        ArrayAdapter<String> adapter = (ArrayAdapter<String>) notasView.getAdapter();
         adapter.notifyDataSetChanged();
+        setSharedPreferences();
+    }
+
+    public void updateNota(String id, String note){
+        notas.updateNote(id, note);
     }
 
     public interface FirstFragmentInteractionListener {
-        void FirstFragmentInteraction(int spinner, String title);
+        void FirstFragmentInteraction(String id, String title, String note);
     }
 
-    public interface addNotasListener {
-        void addNotasInteraction(String new_note);
-    }
+    private class LoadTask extends AsyncTask<String, Void, Void> {
 
-    public interface removeNotasListener {
-        void removeNotasInteraction(int position);
+        @Override
+        protected Void doInBackground(String... files) {
+            // args = array com nomes de ficheiros
+            ArrayList<String> temp = new ArrayList<>();
+            for (String file: files) {
+                Scanner scan = null;
+                try {
+                    scan = new Scanner(getActivity().openFileInput(file + ".txt"));
+                    String allText = ""; // read entire file
+                    while (scan.hasNextLine()) {
+                        String line = scan.nextLine();
+                        allText += line;
+                    }
+                    temp.add(allText);
+                    System.out.println(file + "\t" + allText);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                    temp.add("");
+                }
+            }
+            notas.updateNotes(temp);
+            return null;
+        }
     }
-
-    public interface editNotasListener {
-        void editNotasInteraction(String nota, int position);
-    }
-
 }
