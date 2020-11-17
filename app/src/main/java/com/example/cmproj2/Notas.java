@@ -5,17 +5,13 @@ import java.util.ArrayList;
 public class Notas {
 
 
-    ArrayList<String> ids, titles, notes, display_titles;
+    ArrayList<String> ids, titles, display_titles;
 
     public Notas(ArrayList<String> ids, ArrayList<String> titles) {
         this.ids = ids;
         this.titles = titles;
         this.display_titles = new ArrayList<>();
         display_titles.addAll(titles);
-        this.notes = new ArrayList<>();
-        for (int i = 0; i < ids.size(); i++){
-            notes.add("");
-        }
     }
 
     public ArrayList<String> getIds() {
@@ -35,11 +31,6 @@ public class Notas {
         return titles.get(pos);
     }
 
-    public void updateNotes(ArrayList<String> notes){
-        this.notes.clear();
-        this.notes.addAll(notes);
-    }
-
     public void newNote(String title){
         String newId;
         if (ids.size() == 0){
@@ -51,24 +42,17 @@ public class Notas {
         ids.add(newId);
         titles.add(title);
         display_titles.add(title);
-        notes.add("");
     }
 
-    public String[] getNoteByTitle(String title){
+    public String getIdByTitle(String title){
         int pos = titles.indexOf(title);
-        return new String[]{ids.get(pos), titles.get(pos), notes.get(pos)};
-    }
-
-    public void updateNote(String id, String note){
-        int pos = ids.indexOf(id);
-        notes.set(pos, note);
+        return ids.get(pos);
     }
 
     public void removeNote(int position){
         ids.remove(position);
         titles.remove(position);
         display_titles.remove(position);
-        notes.remove(position);
     }
 
     public void editNote(int position, String title){

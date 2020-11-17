@@ -67,13 +67,13 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Fir
     }
 
     @Override
-    public void FirstFragmentInteraction(String id, String title, String note) {
+    public void FirstFragmentInteraction(String id, String title) {
 
         // With the information from the FragmentOne, we will create a new Fragment, called
         //  FragmentTwo.
         // We will also store this fragment in the memory, with the tag "fragTwo", but we will
         //  also store the transaction (addToBackStack() method) in the memory so we can use it later on.
-        SecondFragment fragmentTwo = SecondFragment.newInstance(id, title, note);
+        SecondFragment fragmentTwo = SecondFragment.newInstance(id, title);
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.main_activity , fragmentTwo, "fragTwo");
         fragmentTransaction.addToBackStack("Top");
@@ -85,7 +85,6 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Fir
         FirstFragment fragmentOne = (FirstFragment) getSupportFragmentManager().findFragmentByTag("fragOne");
         // With this call, the FragmentOne will pop-up in the screen (it will call the onCreateView())
         //  with the new arguments.
-        fragmentOne.updateNota(id, note);
         getSupportFragmentManager().popBackStack();
     }
 }

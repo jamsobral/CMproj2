@@ -16,6 +16,8 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -27,6 +29,7 @@ public class SecondFragment extends Fragment {
     private static final String ARG_PARAM4 = "key4";
 
     private String note_id, note_title, note_content;
+    private EditText text_note;
 
     private SecondFragment.SecondFragmentInteractionListener mListener;
 
@@ -34,12 +37,11 @@ public class SecondFragment extends Fragment {
 
     }
 
-    public static SecondFragment newInstance(String param1, String param2, String param3) {
+    public static SecondFragment newInstance(String param1, String param2) {
         SecondFragment fragment = new SecondFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
-        args.putString(ARG_PARAM3, param3);
         fragment.setArguments(args);
         return fragment;
     }
@@ -50,7 +52,6 @@ public class SecondFragment extends Fragment {
         if (getArguments() != null) {
             note_id = getArguments().getString(ARG_PARAM1);
             note_title = getArguments().getString(ARG_PARAM2);
-            note_content = getArguments().getString(ARG_PARAM3);
         }
     }
 
@@ -66,8 +67,11 @@ public class SecondFragment extends Fragment {
         TextView title = view.findViewById(R.id.insert_title);
         title.setText(note_title);
 
-        EditText text_note = view.findViewById(R.id.text_note);
-        text_note.setText(note_content);
+        text_note = view.findViewById(R.id.text_note);
+        text_note.setText("");
+
+        new LoadTask().execute(note_id);
+
         Button back = view.findViewById(R.id.back_button);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,6 +141,34 @@ public class SecondFragment extends Fragment {
                 e.printStackTrace();
             }
             return null;
+        }
+    }
+
+    private class LoadTask extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... file) {
+            // file = array de tamanho 1
+            Scanner scan = null;
+            try {
+                scan = new Scanner(getActivity().openFileInput(file[0] + ".txt"));
+                String allText = ""; // read entire file
+                while (scan.hasNextLine()) {
+                    String line = scan.nextLine();
+                    allText += line;
+                }
+                return allText;
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                return "";
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            note_content = s;
+            text_note.setText(s);
         }
     }
 }
