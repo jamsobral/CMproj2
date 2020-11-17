@@ -90,6 +90,11 @@ public class FirstFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        objLayoutInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        getSharedPreferences();
+        ArrayList<String> ids = notas.getIds();
     }
 
     @Override
@@ -98,12 +103,6 @@ public class FirstFragment extends Fragment {
             Bundle savedInstanceState
     ) {
         //initArguments();
-        objLayoutInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-        getSharedPreferences();
-        ArrayList<String> ids = notas.getIds();
-        new LoadTask().execute(ids.toArray(new String[ids.size()]));
-
         View view = inflater.inflate(R.layout.fragment_first, container, false);
 
         //new note feature ------------------------------------------------------------------------------------------------------------------------
@@ -128,10 +127,8 @@ public class FirstFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id_) {
                 String title = (String) parent.getAdapter().getItem(position);
-                String[] nota = notas.getNoteByTitle(title); // retorna [id, title, nota]
-                String id = nota[0];
-                String note = nota[2];
-                mListener.FirstFragmentInteraction(id, title, note);
+                String id = notas.getIdByTitle(title);
+                mListener.FirstFragmentInteraction(id, title);
             }
         });
         notasView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -311,38 +308,9 @@ public class FirstFragment extends Fragment {
         setSharedPreferences();
     }
 
-    public void updateNota(String id, String note){
-        notas.updateNote(id, note);
-    }
-
     public interface FirstFragmentInteractionListener {
-        void FirstFragmentInteraction(String id, String title, String note);
+        void FirstFragmentInteraction(String id, String title);
     }
 
-    private class LoadTask extends AsyncTask<String, Void, Void> {
 
-        @Override
-        protected Void doInBackground(String... files) {
-            // args = array com nomes de ficheiros
-            ArrayList<String> temp = new ArrayList<>();
-            for (String file: files) {
-                Scanner scan = null;
-                try {
-                    scan = new Scanner(getActivity().openFileInput(file + ".txt"));
-                    String allText = ""; // read entire file
-                    while (scan.hasNextLine()) {
-                        String line = scan.nextLine();
-                        allText += line;
-                    }
-                    temp.add(allText);
-                    System.out.println(file + "\t" + allText);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                    temp.add("");
-                }
-            }
-            notas.updateNotes(temp);
-            return null;
-        }
-    }
 }
