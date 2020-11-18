@@ -10,6 +10,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -40,10 +41,17 @@ public class MainActivity extends AppCompatActivity implements FirstFragment.Fir
         SharedPreferences.Editor prefsEditor = prefs.edit();
 
         //PREPARAR E LANÇAR O PRIMEIRO FRAGMENTO
-        FirstFragment firstFragment = FirstFragment.newInstance(prefs, prefsEditor); //VALORES INICIAIS PARA NAO IR EM BRANCO
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.add(R.id.main_activity, firstFragment, "fragOne");
-        fragmentTransaction.commit();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                FirstFragment firstFragment = FirstFragment.newInstance(prefs, prefsEditor); //VALORES INICIAIS PARA NAO IR EM BRANCO
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.add(R.id.main_activity, firstFragment, "fragOne");
+                fragmentTransaction.commit();
+            }
+        },3000);
+
     }
 
     @Override
