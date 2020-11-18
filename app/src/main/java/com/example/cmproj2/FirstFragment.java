@@ -163,6 +163,10 @@ public class FirstFragment extends Fragment {
                     if (nota.contains(charSequence)){
                         notasFiltradas.add(nota);
                     }
+                    else if(nota.toLowerCase().contains(charSequence)){
+                        notasFiltradas.add(nota);
+
+                    }
                 }
                 adapter.clear();
                 adapter.addAll(notasFiltradas);
