@@ -192,7 +192,7 @@ public class FirstFragment extends Fragment {
 
     public void show_erase_dialog(int position){
         AlertDialog.Builder warningBuilder = new AlertDialog.Builder(getActivity());
-        warningBuilder.setTitle("Apagar ou modificar a nota "+position+"?");
+        warningBuilder.setTitle("Apagar ou modificar a nota "+notas.getTitles().get(position)+"?");
         warningBuilder.setPositiveButton("Apagar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
