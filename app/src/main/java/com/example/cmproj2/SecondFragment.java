@@ -154,7 +154,9 @@ public class SecondFragment extends Fragment {
                 scan = new Scanner(getActivity().openFileInput(file[0] + ".txt"));
                 String allText = ""; // read entire file
                 while (scan.hasNextLine()) {
+
                     String line = scan.nextLine();
+                    line += '\n';
                     allText += line;
                 }
                 return allText;

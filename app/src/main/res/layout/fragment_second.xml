@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:textColor="@color/white"
-    android:background="@color/black"
+    android:background="#222224"
     tools:context=".SecondFragment">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -18,7 +18,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="55dp"
-            android:background="?attr/colorPrimary"
+            android:background="#333335"
             app:popupTheme="@style/Theme.CMproj2.PopupOverlay"
             app:titleTextColor="@android:color/white">
 
@@ -32,8 +32,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="?attr/actionBarSize"
                     android:gravity="center"
-                    android:text="Note taker"
-                    android:textColor="#ffffff"
+                    android:text="Note Taker"
+                    android:textColor="@color/teal_700"
                     android:textSize="25dp" />
 
                 <LinearLayout
@@ -48,7 +48,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="?attr/actionBarSize"
                         android:text="Save"
-                        android:textColor="@color/white" />
+                        android:textColor="@color/teal_700" />
 
                     <Button
                         android:id="@+id/back_button"
@@ -56,7 +56,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="?attr/actionBarSize"
                         android:text="Back"
-                        android:textColor="@color/white" />
+                        android:textColor='@color/teal_700' />
 
                 </LinearLayout>
 
@@ -84,9 +84,9 @@
         android:layout_marginLeft="20dp"
         android:layout_marginTop="110dp"
         android:ems="10"
-        android:textColor="@color/white"
+        android:textColor="#ffffff"
         android:background="@android:color/transparent"
         android:hint='Escreva aqui a nota'
-        android:textColorHint="#DDFFFFFF"/>
+        android:textColorHint="#aeaeaf"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
