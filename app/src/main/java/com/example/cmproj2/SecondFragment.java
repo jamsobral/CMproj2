@@ -60,7 +60,6 @@ public class SecondFragment extends Fragment {
             LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState
     ) {
-        initArguments();
 
         View view = inflater.inflate(R.layout.fragment_second, container, false);
 
@@ -95,11 +94,6 @@ public class SecondFragment extends Fragment {
         return view;
     }
 
-
-    private void initArguments(){
-        if (getArguments() != null) {
-        }
-    }
 
     @Override
     public void onAttach(Context context) {
