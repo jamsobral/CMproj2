@@ -4,6 +4,9 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -11,6 +14,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -47,6 +52,30 @@ public class SecondFragment extends Fragment {
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.second_menu,menu);
+        super.onCreateOptionsMenu(menu,inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+
+        if(id == R.id.save_button){
+            String text = text_note.getText().toString();
+            new SaveTask().execute(note_id, text);
+
+            return true;
+        }else if(id == R.id.back_button){
+            String text = text_note.getText().toString();
+            mListener.SecondFragmentInteraction(note_id, text);
+
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
@@ -63,6 +92,10 @@ public class SecondFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_second, container, false);
 
+        Toolbar toolbar = view.findViewById(R.id.toolbar);
+        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+        setHasOptionsMenu(true);
+
         TextView title = view.findViewById(R.id.insert_title);
         title.setText(note_title);
 
@@ -71,26 +104,6 @@ public class SecondFragment extends Fragment {
 
         new LoadTask().execute(note_id);
 
-        Button back = view.findViewById(R.id.back_button);
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                // It will also call the function onFragmentOneInteraction() in the MainActivity.
-                // This is the communication from a Fragment to Activity (in a nutshell)
-                String text = text_note.getText().toString();
-                mListener.SecondFragmentInteraction(note_id, text);
-            }
-        });
-
-        Button save = view.findViewById(R.id.save_button);
-        save.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String text = text_note.getText().toString();
-                new SaveTask().execute(note_id, text);
-            }
-        });
         return view;
     }
 

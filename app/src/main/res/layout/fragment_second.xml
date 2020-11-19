@@ -4,60 +4,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:textColor="@color/white"
     android:background="#222224"
     tools:context=".SecondFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="55dp"
         android:theme="@style/Theme.CMproj2.AppBarOverlay">
 
-
-        <Toolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
+            android:layout_height="55dp"
+            app:titleTextColor="@android:color/white"
             android:background="#333335"
-            app:popupTheme="@style/Theme.CMproj2.PopupOverlay"
-            app:titleTextColor="@android:color/white">
+            app:popupTheme="@style/Theme.CMproj2.PopupOverlay">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/app_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="?attr/actionBarSize"
-                    android:gravity="center"
-                    android:text="Note Taker"
-                    android:textColor="#35afb8"
-                    android:textSize="25sp" />
-
-                <Button
-                    android:id="@+id/save_button"
-                    style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
-                    android:layout_width="wrap_content"
-                    android:layout_height="?attr/actionBarSize"
-                    android:layout_marginLeft="100dp"
-                    android:text="Save"
-                    android:textColor="#35afb8" />
-
-                <Button
-                    android:id="@+id/back_button"
-                    style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
-                    android:layout_width="wrap_content"
-                    android:layout_height="?attr/actionBarSize"
-                    android:layout_marginRight="4dp"
-                    android:layout_weight="1"
-                    android:text="Back"
-                    android:textColor="#35afb8" />
-
-            </LinearLayout>
-
-
-        </Toolbar>
+        </androidx.appcompat.widget.Toolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -68,7 +32,19 @@
         android:layout_marginLeft="20dp"
         android:layout_marginTop="70dp"
         android:text="TextView"
-        android:textColor="#ffffff"
+        android:textColor="@color/white"
         android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+    <EditText
+        android:id="@+id/text_note"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="110dp"
+        android:ems="10"
+        android:textColor="#ffffff"
+        android:background="@android:color/transparent"
+        android:hint='Escreva aqui a nota'
+        android:textColorHint="#aeaeaf"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

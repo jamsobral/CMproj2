@@ -15,7 +15,7 @@
         android:theme="@style/Theme.CMproj2.AppBarOverlay">
 
 
-        <Toolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="55dp"
@@ -23,10 +23,10 @@
             android:background="#333335"
             app:popupTheme="@style/Theme.CMproj2.PopupOverlay">
 
-        </Toolbar>
+
+        </androidx.appcompat.widget.Toolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
-
 
     <ListView
         android:id="@+id/notes_list"
