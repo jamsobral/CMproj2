@@ -69,7 +69,6 @@ public class SecondFragment extends Fragment {
         }else if(id == R.id.back_button){
             String text = text_note.getText().toString();
             mListener.SecondFragmentInteraction(note_id, text);
-
             return true;
         }
         return super.onOptionsItemSelected(item);

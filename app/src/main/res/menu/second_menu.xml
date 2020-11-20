@@ -4,11 +4,11 @@
     <item
         android:id="@+id/save_button"
         app:showAsAction="ifRoom"
-        android:title="save">
+        android:title="Guardar">
     </item>
     <item
         android:id="@+id/back_button"
         app:showAsAction="ifRoom"
-        android:title="back">
+        android:title="Voltar">
     </item>
 </menu>
