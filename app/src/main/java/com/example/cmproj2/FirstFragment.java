@@ -30,10 +30,13 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
+
+import static android.content.Context.MODE_PRIVATE;
 
 
 public class FirstFragment extends Fragment {
@@ -329,6 +332,7 @@ public class FirstFragment extends Fragment {
         notas.removeNote(position);
         ArrayAdapter<String> adapter = (ArrayAdapter<String>) notasView.getAdapter();
         adapter.notifyDataSetChanged();
+        new EraseTask().execute(notas.ids.get(position));
         setSharedPreferences();
     }
 
@@ -346,5 +350,20 @@ public class FirstFragment extends Fragment {
         void FirstFragmentInteraction(String id, String title);
     }
 
+    private class EraseTask extends AsyncTask<String, Void, Void> {
+
+        @Override
+        protected Void doInBackground(String... args) {
+            // args[0] = titulo nota, args[1] = descricao nota
+            try {
+                System.out.println(args[0] + ".txt");
+                PrintStream output = new PrintStream(getContext().openFileOutput(args[0] + ".txt", MODE_PRIVATE));
+                output.println("");
+            } catch (FileNotFoundException e){
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
 
 }
