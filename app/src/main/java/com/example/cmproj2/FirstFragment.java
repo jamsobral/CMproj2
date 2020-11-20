@@ -215,19 +215,19 @@ public class FirstFragment extends Fragment {
 
     public void show_erase_dialog(int position){
         AlertDialog.Builder warningBuilder = new AlertDialog.Builder(getActivity());
-        warningBuilder.setTitle("Apagar ou modificar a nota "+notas.getTitles().get(position)+"?");
+        warningBuilder.setTitle("Apagar ou modificar a nota "+notas.getDisplay_titles().get(position)+"?");
         warningBuilder.setPositiveButton("Apagar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                removeNotas(position);
+                removeNotas(notas.getTitles().indexOf(notas.getDisplay_titles().get(position)));
             }
         });
         warningBuilder.setNeutralButton("Modificar título", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                show_modify_dialog(notas.getTitles().get(position), position);
+                show_modify_dialog(notas.getDisplay_titles().get(position), position);
             }
         });
         warningBuilder.setNegativeButton("Cancelar", null);
@@ -245,13 +245,13 @@ public class FirstFragment extends Fragment {
         editText.setText(nota);
 
         AlertDialog.Builder warningBuilder = new AlertDialog.Builder(getActivity());
-        warningBuilder.setTitle("Modificar a nota "+position+"?");
+        warningBuilder.setTitle("Modificar a nota "+notas.getDisplay_titles().get(position)+"?");
         warningBuilder.setPositiveButton("Modificar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 String new_note = editText.getText().toString();
-                editNotas(new_note, position);
+                editNotas(new_note, notas.getTitles().indexOf(notas.getDisplay_titles().get(position)));
             }
         });
         warningBuilder.setNegativeButton("Cancelar", null);
@@ -285,11 +285,6 @@ public class FirstFragment extends Fragment {
         dialog.show();
 
     }
-    private void initArguments(){
-        if (getArguments() != null) {
-            //titles = getArguments().getStringArrayList(ARG_PARAM1);
-        }
-    }
 
     @Override
     public void onAttach(Context context) {
@@ -310,8 +305,20 @@ public class FirstFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
+    public boolean repeated(String str){
+        for(String i: notas.getTitles()){
+            if(i.equals(str)){
+                return true;
+            }
+        }
+        return false;
+    }
 
     public void addNotas(String nota){
+        while(repeated(nota)){
+            nota=nota+".";
+        }
+
         notas.newNote(nota);
         ArrayAdapter<String> adapter = (ArrayAdapter<String>) notasView.getAdapter();
         adapter.notifyDataSetChanged();
@@ -326,6 +333,9 @@ public class FirstFragment extends Fragment {
     }
 
     public void editNotas(String nota, int position){
+        while(repeated(nota)){
+            nota=nota+".";
+        }
         notas.editNote(position, nota);
         ArrayAdapter<String> adapter = (ArrayAdapter<String>) notasView.getAdapter();
         adapter.notifyDataSetChanged();

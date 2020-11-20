@@ -50,13 +50,15 @@ public class Notas {
     }
 
     public void removeNote(int position){
+        display_titles.remove(display_titles.indexOf(titles.get(position)));
         ids.remove(position);
         titles.remove(position);
-        display_titles.remove(position);
+
     }
 
     public void editNote(int position, String title){
+        display_titles.set(display_titles.indexOf(titles.get(position)), title);
         titles.set(position, title);
-        display_titles.set(position, title);
+
     }
 }
